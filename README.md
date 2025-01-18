@@ -1,33 +1,5 @@
 # API Endpoints
 
-## Chatbot Endpoints
-
-### Create Chatbot
-**POST** `/create-bot`
-
-#### Request Body
-```json
-{
-  "name": "My Chatbot",
-  "description": "A chatbot for customer support",
-  "information": {
-    "language": "English",
-    "timezone": "UTC"
-  }
-}
-```
-
-#### Response
-```json
-{
-  "result": "success",
-  "API_URL": "https://api.example.com/chatbot/12345",
-  "APIKEY": "abc123"
-}
-```
-
-## User Endpoints
-
 ### Register User
 **POST** `/register`
 
