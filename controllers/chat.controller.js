@@ -25,6 +25,9 @@ module.exports.createBot = async (req, res) => {
         const chatbot = new ChatbotModel({ userId, name, description: desc, information: info });
 
         const result = await chatbot.save();
+
+        await addChatbotId(userId, result._id);
+
         const APIKEY = jwt.sign({ chatbotId: result._id }, process.env.JWT_SECRET);
         const API_URL = process.env.URL;
         res.status(201).json({result,API_URL,APIKEY});
@@ -69,3 +72,23 @@ async function simplyfyInformation(information) {
 
 
 }
+
+const addChatbotId = async (userId, chatbotId) => {
+    try {
+        const user = await userModel.findById(userId);
+        if (!user) {
+            throw new Error('User not found');
+        }
+
+        // Add the chatbot ID if it doesn't already exist
+        if (!user.chatbotIds.includes(chatbotId)) {
+            user.chatbotIds.push(chatbotId);
+            await user.save();
+           
+        } else {
+            console.log('Chatbot ID already exists');
+        }
+    } catch (error) {
+        console.error('Error adding chatbot ID:', error.message);
+    }
+};
