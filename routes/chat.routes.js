@@ -7,4 +7,6 @@ const AuthMiddleware = require('../middlewares/auth.middleware');
 
 router.post('/create-bot', AuthMiddleware.userAuth ,chatController.createBot);
 
+router.post('/generate', AuthMiddleware.userAuth ,chatController.generateResponse);
+
 module.exports = router;
