@@ -108,6 +108,145 @@
 }
 ```
 
+# Endpoint Documentation: `/generate`
+
+## Description
+The `/generate` endpoint processes a user prompt to generate a concise response based on the product description and information stored for a specific chatbot. This endpoint ensures users get accurate and context-relevant answers using AI.
+
+---
+
+## HTTP Method
+**POST**
+
+---
+
+## Request
+
+### Headers
+- **Autherisation**: `bearer <token>`
+
+### Body
+The request body must include the following fields:
+
+```json
+{
+  "prompt": "<user_question>",
+  "apiKey": "<api_key_for_chatbot>"
+}
+```
+
+#### Fields:
+- **prompt** (string, required): The user query to generate a response for.
+- **apiKey** (string, required): The API key associated with the chatbot. This key validates the chatbot and ensures access control.
+
+### Example Request:
+```json
+{
+  "prompt": "whats the use of this product?",
+  "apiKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjaGF0Ym90SWQiOiI2NzhlOTMyODQzN2IyMDRjOTBhZWFkNzkiLCJpYXQiOjE3MzczOTcwMzN9.BFTp6BZoktEy0V7w7pmtR6VX0nHjWaTBE4azR37OAg"
+}
+```
+
+---
+
+## Response
+
+### Success Response
+If the request is successful, the endpoint returns a JSON object with the generated response.
+
+#### Response Fields:
+- **response** (string): The AI-generated response based on the chatbot’s description and information.
+
+#### Example Success Response:
+```json
+{
+  "response": "True Wireless earbuds with active noise cancellation for listening to music or other audio on laptops, mobiles, or tablets."
+}
+```
+
+### Error Responses
+If the request fails, an appropriate error message and status code are returned.
+
+#### Example Error Responses:
+
+1. **Invalid API Key:**
+   - **Status Code:** 404
+   - **Body:**
+     ```json
+     {
+       "message": "Invalid API key."
+     }
+     ```
+
+2. **Inactive Chatbot:**
+   - **Status Code:** 403
+   - **Body:**
+     ```json
+     {
+       "message": "Chatbot is not active."
+     }
+     ```
+
+3. **Insufficient Credit:**
+   - **Status Code:** 403
+   - **Body:**
+     ```json
+     {
+       "message": "Insufficient credit. Please recharge your account."
+     }
+     ```
+
+4. **Server Error:**
+   - **Status Code:** 500
+   - **Body:**
+     ```json
+     {
+       "message": "An error occurred while processing your request.",
+       "error": "<error_details>"
+     }
+     ```
+
+---
+
+## Notes
+1. **API Key Validation:** The `apiKey` is decoded to extract the `chatbotId`. This `chatbotId` is used to retrieve the corresponding chatbot details.
+2. **Chatbot Conditions:** The chatbot must have an `active` status to proceed.
+3. **Credit Check:** The user associated with the chatbot must have sufficient credit to use this endpoint.
+4. **Logging:** Each request is logged, and the `requestCount` for the chatbot is incremented. The user’s `totalRequestCount` is incremented, and `credit` is decremented.
+
+---
+
+## Example Use Case
+### Scenario:
+A user wants to know the primary use of the product described in the chatbot.
+
+#### Request:
+```json
+{
+  "prompt": "whats the use of this product?",
+  "apiKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjaGF0Ym90SWQiOiI2NzhlOTMyODQzN2IyMDRjOTBhZWFkNzkiLCJpYXQiOjE3MzczOTcwMzN9.BFTp6BZoktEy0V7w7pmZtR6VX0nHjWaTBE4azR37OAg"
+}
+```
+
+#### Response:
+```json
+{
+  "response": "True Wireless earbuds with active noise cancellation for listening to music or other audio on laptops, mobiles, or tablets."
+}
+```
+
+---
+
+## Additional Information
+- **Rate Limits:** Ensure that usage adheres to the assigned credits in the user account.
+- **Error Handling:** Provide meaningful error messages to guide users in correcting their requests.
+
+---
+
+
+
+
+
 #### Authentication
 This endpoint requires user authentication. The `AuthMiddleware.userAuth` middleware verifies the user's credentials before allowing access to this endpoint. A valid authentication token must be provided in the request headers.
 

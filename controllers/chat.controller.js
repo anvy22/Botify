@@ -3,6 +3,7 @@ const userModel = require('../models/user.model');
 const promptParser = require('../services/prompt.parser');
 const axios = require('axios');
 const jwt = require('jsonwebtoken');
+const logModel = require('../models/log.model');
 
 module.exports.createBot = async (req, res) => {    
     
@@ -94,33 +95,82 @@ const addChatbotId = async (userId, chatbotId) => {
 };
 
 module.exports.generateResponse = async (req, res) => {
+    const { prompt, apiKey } = req.body;
 
-    const {prompt , apiKey} = req.body;
-    try{
-    const chatbotId = jwt.verify(apiKey, process.env.JWT_SECRET).chatbotId;
-    const chatbot = await ChatbotModel.findById(chatbotId);
-    if (!chatbot) {
-        return res.status(404).json({ message: 'Invalid API key.' });
+    try {
+        // Decode chatbot ID from API key
+        const decoded = jwt.verify(apiKey, process.env.JWT_SECRET);
+        const chatbotId = decoded.chatbotId;
+
+        // Fetch chatbot details
+        const chatbot = await ChatbotModel.findById(chatbotId);
+        if (!chatbot) {
+            return res.status(404).json({ message: 'Invalid API key.' });
+        }
+
+        // Check chatbot status
+        if (chatbot.status !== 'active') {
+            return res.status(403).json({ message: 'Chatbot is not active.' });
+        }
+
+        // Fetch user details
+        const user = await userModel.findById(chatbot.userId);
+        if (!user) {
+            return res.status(404).json({ message: 'Associated user not found.' });
+        }
+
+        // Check user status and credit
+        if (user.status !== 'active') {
+            return res.status(403).json({ message: 'User account is not active.' });
+        }
+        if (user.credit <= 0) {
+            return res.status(403).json({ message: 'Insufficient credit. Please upgrade your plan.' });
+        }
+
+        // Prepare the prompt for the API request
+        const prompt3 = `
+            Answer the following question using only the description and information provided. 
+            Make the response as short as possible. Do not give a comment or any additional information.
+            The description of the product is: ${chatbot.description}.
+            The information of the product is: ${chatbot.information}.
+            The question is: ${prompt}
+        `;
+
+        // Send request to external API
+        const apiUrl = process.env.LLAMA_API_URL;
+        const requestBody = {
+            model: "llama3",
+            prompt: prompt3,
+            stream: false
+        };
+
+        const response = await axios.post(apiUrl, requestBody);
+
+        if (response) {
+            // Log the request and response
+            const log = new logModel({ chatbotId, messages: [{ message: prompt, timestamp: new Date() }] });
+            await log.save();
+
+            // Increment chatbot request count
+            await ChatbotModel.findByIdAndUpdate(
+                chatbot._id,
+                { $inc: { requestCount: 1 } },
+                { new: true }
+            );
+
+            // Update user stats (totalRequestCount and credit)
+            await userModel.findByIdAndUpdate(
+                user._id,
+                { $inc: { totalRequestCount: 1, credit: -1 } },
+                { new: true }
+            );
+        }
+
+        // Return the response from the external API
+        res.status(200).json({ response: response.data.response });
+
+    } catch (error) {
+        console.error('Error generating response:', error.message);
+        res.status(500).json({ message: 'An error occurred while processing your request.', error: `Invalid API key` });
     }
-    const description = chatbot.description;
-    const information = chatbot.information;
-
-    const prompt3 =`Answer the following question using only the description and information provided also make the  response short as posible. Don't give a comment or any other information.
-    The description of product is : ${description}. The information of product is : ${information}. The question is :${prompt}`;
-
-    const apiUrl = process.env.LLAMA_API_URL;
-    const requestBody = {
-        model: "llama3",
-        prompt: prompt3,
-        stream: false
-    };
-
-    const response = await axios.post(apiUrl, requestBody);
-    res.status(200).json({ response: response.data.response });
-
-    }catch{
-        return res.status(404).json({ message: 'Invalid API key.' });
-    }
-    
-
-}
+};
