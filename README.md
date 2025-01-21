@@ -108,9 +108,9 @@
 }
 ```
 
-# Endpoint Documentation: `/generate`
+### Endpoint Documentation: `/generate`
 
-## Description
+#### Description
 The `/generate` endpoint processes a user prompt to generate a concise response based on the product description and information stored for a specific chatbot. This endpoint ensures users get accurate and context-relevant answers using AI.
 
 ---
