@@ -164,6 +164,135 @@ If the request is successful, the endpoint returns a JSON object with the genera
 }
 ```
 
+###  List All Chatbots
+#### **Endpoint:**
+```
+GET /list-bots
+```
+#### **Headers:**
+```json
+{
+    "Authorization": "Bearer <your_token>"
+}
+```
+#### **Response:**
+```json
+[
+    {
+        "_id": "67b56adcf2adee6f6359b6dd",
+        "userId": "67b56a56f2adee6f6359b6d5",
+        "name": "Samsung Book 4",
+        "requestCount": 1,
+        "description": "The Samsung Galaxy Book4 in Gray features 16GB RAM, 512GB SSD, 15.6 Full HD display, Intel Core i5 processor, Windows 11 Home, MS Office 2021, fingerprint reader, Intel Iris XE graphics, and RJ45 LAN port.",
+        "information": "The Samsung Galaxy Book4 is a portable laptop with a 15.6-inch Full HD display, an Intel Core i5 processor at 1.3 GHz, 16GB LPDDR4X RAM, and a 512GB SSD storage. It has Dolby Atmos speakers, Intel Iris Xe Graphics, runs on Windows 11 Home, and features a 54Wh lithium-ion battery. Connectivity options include Bluetooth, Wi-Fi (802.11ax), two USB 3.0 ports, and an HDMI port. The device weighs 1.55 kg and comes with a 45W charger, USB-C to C cable, and a quick start guide made in China.",
+        "status": "active",
+        "created_at": "2025-02-19T05:23:40.390Z",
+        "__v": 0
+    }
+]
+```
+
+---
+
+###  Get Chatbot by ID
+#### **Endpoint:**
+```
+GET /get-bot/:id
+```
+#### **Headers:**
+```json
+{
+    "Authorization": "Bearer <your_token>"
+}
+```
+#### **Response:**
+```json
+{
+    "_id": "67b56adcf2adee6f6359b6dd",
+    "userId": "67b56a56f2adee6f6359b6d5",
+    "name": "Samsung Book 4",
+    "requestCount": 1,
+    "description": "The Samsung Galaxy Book4 in Gray features 16GB RAM, 512GB SSD, 15.6 Full HD display, Intel Core i5 processor, Windows 11 Home, MS Office 2021, fingerprint reader, Intel Iris XE graphics, and RJ45 LAN port.",
+    "information": "The Samsung Galaxy Book4 is a portable laptop with a 15.6-inch Full HD display, an Intel Core i5 processor at 1.3 GHz, 16GB LPDDR4X RAM, and a 512GB SSD storage. It has Dolby Atmos speakers, Intel Iris Xe Graphics, runs on Windows 11 Home, and features a 54Wh lithium-ion battery. Connectivity options include Bluetooth, Wi-Fi (802.11ax), two USB 3.0 ports, and an HDMI port. The device weighs 1.55 kg and comes with a 45W charger, USB-C to C cable, and a quick start guide made in China.",
+    "status": "active",
+    "created_at": "2025-02-19T05:23:40.390Z",
+    "__v": 0
+}
+```
+
+---
+
+###  Update Chatbot
+#### **Endpoint:**
+```
+POST /update-bot
+```
+#### **Headers:**
+```json
+{
+    "Authorization": "Bearer <your_token>",
+    "Content-Type": "application/json"
+}
+```
+#### **Request Body:**
+```json
+{
+    "chatbotId": "67b578deb5c3b6a38dd4c285",
+    "name": "My Updated Chatbot",
+    "description": "The XYZ Smartphone is a sleek and powerful device designed for modern users. Featuring a high-resolution display, a fast processor, and a long-lasting battery, it ensures smooth performance for work and entertainment. With its advanced camera system, capture stunning photos and videos effortlessly. The phone also offers 5G connectivity, ample storage, and the latest security features for a seamless and secure user experience. Perfect for those who demand performance, style, and innovation in one device.",
+    "information": "The XYZ Smartphone is a sleek and powerful device designed for modern users. Featuring a high-resolution display, a fast processor, and a long-lasting battery, it ensures smooth performance for work and entertainment. With its advanced camera system, capture stunning photos and videos effortlessly. The phone also offers 5G connectivity, ample storage, and the latest security features for a seamless and secure user experience. Perfect for those who demand performance, style, and innovation in one device."
+}
+```
+#### **Response:**
+```json
+{
+    "message": "Chatbot Updated.",
+    "chatbot": {
+        "_id": "67b578deb5c3b6a38dd4c285",
+        "userId": "67b56a56f2adee6f6359b6d5",
+        "name": "My Updated Chatbot",
+        "requestCount": 3,
+        "description": "The XYZ Smartphone is designed for modern users with a high-resolution display, fast processor, long-lasting battery, advanced camera system, 5G connectivity, ample storage, and latest security features.",
+        "information": "The XYZ Smartphone:\n\n* High-resolution display\n* Fast processor\n* Long-lasting battery\n* Advanced camera system\n* 5G connectivity\n* Ample storage\n* Latest security features",
+        "status": "active",
+        "created_at": "2025-02-19T06:23:26.813Z",
+        "__v": 0
+    }
+}
+```
+
+---
+
+###  Delete Chatbot
+#### **Endpoint:**
+```
+POST /delete-bot
+```
+#### **Headers:**
+```json
+{
+    "Authorization": "Bearer <your_token>",
+    "Content-Type": "application/json"
+}
+```
+#### **Request Body:**
+```json
+{
+    "botId": "67b56adcf2adee6f6359b6dd"
+}
+```
+#### **Response:**
+```json
+{
+    "message": "Chatbot deleted successfully."
+}
+```
+
+---
+
+
+
+
 ### Error Responses
 If the request fails, an appropriate error message and status code are returned.
 

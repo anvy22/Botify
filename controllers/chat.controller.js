@@ -4,10 +4,15 @@ const promptParser = require('../services/prompt.parser');
 const axios = require('axios');
 const jwt = require('jsonwebtoken');
 const logModel = require('../models/log.model');
+const chatbotModel = require('../models/chatbot.model');
+const mongoose = require('mongoose');
 
 module.exports.createBot = async (req, res) => {    
     
     let { name, description, information } = req.body;
+    if(!name || !description || information){
+        res.status(400).json({ message:'every feild is required.'})
+    }
     
     description = promptParser(description);
     information = promptParser(information);
@@ -58,7 +63,7 @@ module.exports.createBot = async (req, res) => {
 
 async function simplyfyInformation(information) {   
    
-    const prompt2 =`Simplyfy the folowing  data by removing the unnecessary information and give only the required information and donot tell any comment. The data is :`
+    const prompt2 =`Simplyfy the folowing  data by removing the unnecessary information donot change the meaning of the data and give only the required information and donot tell any comment. The data is :`
     const apiUrl = process.env.LLAMA_API_URL;
     
     const requestBody = {
@@ -96,6 +101,12 @@ const addChatbotId = async (userId, chatbotId) => {
 
 module.exports.generateResponse = async (req, res) => {
     const { prompt, apiKey } = req.body;
+
+    if(!prompt || !apiKey){
+
+        res.status(400).json({ message:'every feild is required.'})
+        
+    }
 
     try {
         // Decode chatbot ID from API key
@@ -139,7 +150,7 @@ module.exports.generateResponse = async (req, res) => {
         // Send request to external API
         const apiUrl = process.env.LLAMA_API_URL;
         const requestBody = {
-            model: "llama3",
+            model: "azure99/blossom-v5:4b",
             prompt: prompt3,
             stream: false
         };
@@ -172,5 +183,119 @@ module.exports.generateResponse = async (req, res) => {
     } catch (error) {
         console.error('Error generating response:', error.message);
         res.status(500).json({ message: 'An error occurred while processing your request.', error: `Invalid API key` });
+    }
+};
+
+
+
+module.exports.listBots = async (req, res) => {
+    const { id: userId } = req.query;
+
+    try {
+        // Validate userId as ObjectId
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            return res.status(400).json({ message: 'Invalid user ID.' });
+        }
+
+        // Fetch chatbots associated with the userId
+        const chatbots = await ChatbotModel.find({ userId });
+
+        // Check if the user has any chatbots
+        if (!chatbots.length) {
+            return res.status(404).json({ message: 'No chatbots found for this user.' });
+        }
+
+        res.status(200).json(chatbots);
+    } catch (error) {
+        console.error('Error fetching chatbots:', error.message);
+        res.status(500).json({ message: 'An error occurred while fetching chatbots.' });
+    }
+};
+
+module.exports.getBot = async (req, res) => {
+   
+    const chatbotId = req.params.id; 
+    try {
+        const chatbot = await ChatbotModel.findById(chatbotId);
+        if (!chatbot) { 
+            return res.status(404)
+            .json({ message: 'Chatbot not found.' });
+        }
+        res.status(200).json(chatbot);
+    } catch (error) {
+        console.error('Error fetching chatbot:', error.message);
+        res.status(400).json({ message: 'An error occurred while fetching chatbot.' });
+    }
+
+}
+
+module.exports.updateBot = async (req,res) =>{
+
+    let { name, description, information,chatbotId } = req.body;
+
+    if(!name || !description || !information || !chatbotId ){
+        return res.status(400).json({ message: 'Every field is required.' });
+    }
+
+     // Validate chatbotId format
+     if (!mongoose.Types.ObjectId.isValid(chatbotId)) {
+        return res.status(400).json({ message: 'Invalid chatbot ID format.' });
+    }
+   
+    try {
+
+         
+    const chatBot = await ChatbotModel.findById(chatbotId);
+          if (!chatBot) { 
+                return res.status(404)
+                .json({ message: 'Chatbot not found.' });
+           }
+
+ 
+
+ 
+       description = promptParser(description);
+       information = promptParser(information);
+      
+
+        
+        const desc = await simplyfyDescription(description);
+        const info = await simplyfyInformation(information);
+
+        const updatedChatbot = await ChatbotModel.findByIdAndUpdate(
+            chatbotId,
+            { name, description: desc, information: info },
+            { new: true } // Return updated chatbot
+        );
+
+        res.status(200).json({ message: 'Chatbot Updated.', chatbot: updatedChatbot });
+
+    } catch (error) {
+        console.error("Chatbot Update Error:", error);
+        res.status(500).json({ message: 'An error occurred while updating the chatbot.' });
+    }
+};
+
+ 
+module.exports.deleteBot = async (req, res) => {
+    const { botId } = req.body;
+
+    // Validate botId existence and format
+    if (!botId || !mongoose.Types.ObjectId.isValid(botId)) {
+        return res.status(400).json({ message: 'Invalid or missing Bot ID.' });
+    }
+
+    try {
+        // Find and delete the bot
+        const deletedBot = await ChatbotModel.findByIdAndDelete(botId);
+
+        if (!deletedBot) {
+            return res.status(404).json({ message: 'Chatbot not found.' });
+        }
+
+        res.status(200).json({ message: 'Chatbot deleted successfully.' });
+    } catch (error) {
+        console.error("Error while deleting the chatbot:", error);
+        res.status(500).json({ message: 'An error occurred while deleting the chatbot.' });
     }
 };

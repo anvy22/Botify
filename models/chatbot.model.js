@@ -33,7 +33,8 @@ const ChatbotSchema = new mongoose.Schema({
         type: String,
         enum: ['active', 'inactive'],
         default: 'active'
-    }
+    },
+  
 });
 
 // Export the model

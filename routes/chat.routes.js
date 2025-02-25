@@ -9,4 +9,12 @@ router.post('/create-bot', AuthMiddleware.userAuth ,chatController.createBot);
 
 router.post('/generate', AuthMiddleware.userAuth ,chatController.generateResponse);
 
+router.get('/list-bots', AuthMiddleware.userAuth ,chatController.listBots);
+
+router.get('/get-bot/:id', AuthMiddleware.userAuth ,chatController.getBot);
+
+router.post('/update-bot',AuthMiddleware.userAuth,chatController.updateBot)
+
+router.post('/delete-bot',AuthMiddleware.userAuth,chatController.deleteBot)
+
 module.exports = router;
