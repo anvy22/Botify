@@ -167,7 +167,8 @@ If the request is successful, the endpoint returns a JSON object with the genera
 ###  List All Chatbots
 #### **Endpoint:**
 ```
-GET /list-bots
+GET /chatbot
+/list-bots
 ```
 #### **Headers:**
 ```json
@@ -197,7 +198,7 @@ GET /list-bots
 ###  Get Chatbot by ID
 #### **Endpoint:**
 ```
-GET /get-bot/:id
+GET /chatbot/get-bot/:id
 ```
 #### **Headers:**
 ```json
@@ -225,7 +226,7 @@ GET /get-bot/:id
 ###  Update Chatbot
 #### **Endpoint:**
 ```
-POST /update-bot
+POST /chatbot/update-bot
 ```
 #### **Headers:**
 ```json
@@ -266,7 +267,7 @@ POST /update-bot
 ###  Delete Chatbot
 #### **Endpoint:**
 ```
-POST /delete-bot
+POST /chatbot/delete-bot
 ```
 #### **Headers:**
 ```json
