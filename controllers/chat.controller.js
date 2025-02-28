@@ -6,12 +6,13 @@ const jwt = require('jsonwebtoken');
 const logModel = require('../models/log.model');
 const chatbotModel = require('../models/chatbot.model');
 const mongoose = require('mongoose');
+const { logActivity } = require('../services/activity.service');
 
 module.exports.createBot = async (req, res) => {    
     
     let { name, description, information } = req.body;
-    if(!name || !description || information){
-        res.status(400).json({ message:'every feild is required.'})
+    if(!name || !description || !information){
+      return  res.status(400).json({ message:'every feild is required.'})
     }
     
     description = promptParser(description);
@@ -33,13 +34,14 @@ module.exports.createBot = async (req, res) => {
         const result = await chatbot.save();
 
         await addChatbotId(userId, result._id);
+        logActivity(userId, 'CREATED BOT', `Bot ID: ${result._id}  Bot Name: ${result.name}`);
 
         const APIKEY = jwt.sign({ chatbotId: result._id }, process.env.JWT_SECRET);
         const API_URL = process.env.URL;
         res.status(201).json({result,API_URL,APIKEY});
     } catch (error) {
         console.error("Chatbot Creation Error:", error); // Log any errors during chatbot creation
-        res.status(500).json({ message: error.message });
+       return res.status(500).json({ message: error.message });
     }
 
 
@@ -268,6 +270,8 @@ module.exports.updateBot = async (req,res) =>{
             { new: true } // Return updated chatbot
         );
 
+        logActivity(req.user._id, 'UPDATED BOT', `Bot ID: ${chatbotId} Bot Name: ${name}`);
+
         res.status(200).json({ message: 'Chatbot Updated.', chatbot: updatedChatbot });
 
     } catch (error) {
@@ -293,9 +297,81 @@ module.exports.deleteBot = async (req, res) => {
             return res.status(404).json({ message: 'Chatbot not found.' });
         }
 
+        logActivity(req.user._id, 'DELETED BOT', `Bot ID: ${botId} Bot Name: ${deletedBot.name}`);
+
         res.status(200).json({ message: 'Chatbot deleted successfully.' });
     } catch (error) {
         console.error("Error while deleting the chatbot:", error);
         res.status(500).json({ message: 'An error occurred while deleting the chatbot.' });
     }
 };
+
+
+
+module.exports.activateBot = async (req, res) => {
+    const { chatbotId, status } = req.body;
+
+    // Validate chatbotId existence and format
+    if (!chatbotId || !mongoose.Types.ObjectId.isValid(chatbotId)) {
+        return res.status(400).json({ message: 'Invalid or missing chatbot ID.' });
+    }
+
+    // Validate status value
+    if (!status || !['activate', 'deactivate'].includes(status)) {
+        return res.status(400).json({ message: 'Invalid or missing status value.' });
+    }
+
+    try {
+        const chatbot = await ChatbotModel.findById(chatbotId);
+        if (!chatbot) {
+            return res.status(404).json({ message: 'Chatbot not found.' });
+        }
+
+        // Ensure req.user exists before checking authorization
+        if (!req.user || chatbot.userId.toString() !== req.user._id.toString()) {
+            console.log(`Unauthorized access attempt: Chatbot Owner: ${chatbot.userId}, Request User: ${req.user?._id}`);
+            return res.status(403).json({ message: 'Unauthorized' });
+        }
+
+        // Update chatbot status
+        const updatedChatbot = await ChatbotModel.findByIdAndUpdate(
+            chatbotId,
+            { status: status === 'activate' ? 'active' : 'inactive' },
+            { new: true }
+        );
+
+        logActivity(req.user._id, status === 'activate' ? 'ACTIVATED BOT' : 'DEACTIVATED BOT', `Bot ID: ${chatbotId} Bot Name: ${updatedChatbot.name}`);
+
+        res.status(200).json({ 
+            message: `Chatbot ${status === 'activate' ? 'activated' : 'deactivated'} successfully.`,
+            chatbot: updatedChatbot 
+        });
+
+    } catch (error) {
+        console.error("Error while updating chatbot status:", error);
+        res.status(500).json({ message: 'An error occurred while updating chatbot status.' });
+    }
+};
+
+
+module.exports.getLogs = async (req, res) => {
+    
+    botId = req.query.botId;
+
+    if(!botId || !mongoose.Types.ObjectId.isValid(botId)){
+        return res.status(400).json({ message: 'Invalid or missing chatbot ID.' });
+    }
+
+    try{
+        const logs = await logModel.find({chatbotId:botId});
+        if(!logs.length){
+            return res.status(200).json({ message: 'No logs found for this chatbot.' });
+        }
+        return res.status(200).json(logs);
+    }catch{
+        console.error("Error while fetching logs:", error);
+        res.status(500).json({ message: 'An error occurred while fetching logs.' });
+    }
+
+
+ }

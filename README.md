@@ -292,6 +292,53 @@ POST /delete-bot
 
 
 
+###  Get Activities
+**GET** `/activities/recentActivities`
+
+## Description
+This API retrieves recent user activities, allowing sorting and limiting the number of results.
+
+## Request Format
+```http
+GET /activities/recentActivities?order=desc&limit=10 HTTP/1.1
+Host: localhost:5000
+```
+
+### Query Parameters
+| Parameter | Type   | Required | Description |
+|-----------|--------|----------|-------------|
+| `order`   | string | No       | Sorting order (`asc` for oldest first, `desc` for newest first, default: `desc`). |
+| `limit`   | number | No       | Number of records to return (default: 10). |
+
+## Response Format
+```json
+{
+    "success": true,
+    "data": [
+        {
+            "_id": "67c203fd79e1b7f1d4fef2ce",
+            "userId": "67b56a56f2adee6f6359b6d5",
+            "action": "ACTIVATED BOT",
+            "details": "Bot ID: 67beeb0b3c3a2fad699061c8",
+            "createdAt": "2025-02-28T18:44:13.627Z"
+        },
+        {
+            "_id": "67c203f979e1b7f1d4fef2c8",
+            "userId": "67b56a56f2adee6f6359b6d5",
+            "action": "CREATED BOT",
+            "details": "Bot ID: 67c203cf79e1b7f1d4fef2be",
+            "createdAt": "2025-02-28T18:43:27.808Z"
+        }
+    ]
+}
+```
+
+## Notes
+- Helps track user actions such as bot activations, deactivations, and creations.
+- Useful for logging and monitoring recent operations. 🚀
+
+
+
 
 ### Error Responses
 If the request fails, an appropriate error message and status code are returned.
