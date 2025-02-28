@@ -320,14 +320,14 @@ Host: localhost:5000
             "_id": "67c203fd79e1b7f1d4fef2ce",
             "userId": "67b56a56f2adee6f6359b6d5",
             "action": "ACTIVATED BOT",
-            "details": "Bot ID: 67beeb0b3c3a2fad699061c8",
+            "details": "Bot ID: 67beeb0b3c3a2fad699061c8  Bot Name: Samsung Book 7",
             "createdAt": "2025-02-28T18:44:13.627Z"
         },
         {
             "_id": "67c203f979e1b7f1d4fef2c8",
             "userId": "67b56a56f2adee6f6359b6d5",
             "action": "CREATED BOT",
-            "details": "Bot ID: 67c203cf79e1b7f1d4fef2be",
+            "details": "Bot ID: 67c203cf79e1b7f1d4fef2be  Bot Name: Samsung Book 8 ",
             "createdAt": "2025-02-28T18:43:27.808Z"
         }
     ]
