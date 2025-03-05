@@ -204,7 +204,7 @@ module.exports.listBots = async (req, res) => {
 
         // Check if the user has any chatbots
         if (!chatbots.length) {
-            return res.status(404).json({ message: 'No chatbots found for this user.' });
+            return res.status(200).json({ message: 'No chatbots found for this user.' });
         }
 
         res.status(200).json(chatbots);
