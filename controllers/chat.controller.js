@@ -355,23 +355,58 @@ module.exports.activateBot = async (req, res) => {
 
 
 module.exports.getLogs = async (req, res) => {
-    
-    botId = req.query.botId;
+    try {
+        const botId = req.query.botId;
 
-    if(!botId || !mongoose.Types.ObjectId.isValid(botId)){
-        return res.status(400).json({ message: 'Invalid or missing chatbot ID.' });
-    }
+        if (!botId || !mongoose.Types.ObjectId.isValid(botId)) {
+            return res.status(400).json({ message: 'Invalid or missing chatbot ID.' });
+        }
 
-    try{
-        const logs = await logModel.find({chatbotId:botId});
-        if(!logs.length){
+        const chatbot = await ChatbotModel.findById(botId);
+        if (!chatbot) {
+            return res.status(404).json({ message: 'Chatbot not found.' });
+        }
+
+        if (chatbot.userId.toString() !== req.user._id.toString()) {
+            console.log("Unauthorized access");
+            return res.status(403).json({ message: 'Unauthorized access.' });
+        }
+
+        const logs = await logModel.find({ chatbotId: botId });
+
+        if (!logs.length) {
             return res.status(200).json({ message: 'No logs found for this chatbot.' });
         }
+
         return res.status(200).json(logs);
-    }catch{
+
+    } catch (error) {
         console.error("Error while fetching logs:", error);
         res.status(500).json({ message: 'An error occurred while fetching logs.' });
     }
+};
 
+module.exports.getUserLog = async (req, res) => {
+    const userId = req.user._id;
 
- }
+    try {
+        const chatbots = await chatbotModel.find({ userId });
+        if (!chatbots.length) {
+            return res.status(404).json({ message: 'No chatbots found for this user.' });
+        }
+
+        const chatbotIds = chatbots.map(chatbot => chatbot._id);
+
+        const logs = await logModel.find({ chatbotId: { $in: chatbotIds } });
+
+        if (!logs.length) {
+            return res.status(200).json({ message: 'No logs found for this user.' });
+        }
+       
+        res.status(200).json(logs);
+    } catch (error) {
+        console.error('Error fetching logs:', error.message);
+        res.status(500).json({ message: 'An error occurred while fetching logs.' });
+    }
+}
+

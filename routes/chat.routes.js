@@ -21,4 +21,6 @@ router.post('/activate-bot',AuthMiddleware.userAuth,chatController.activateBot);
 
 router.get('/get-logs',AuthMiddleware.userAuth,chatController.getLogs)
 
+router.get('/get-overall-logs',AuthMiddleware.userAuth,chatController.getUserLog)
+
 module.exports = router;
