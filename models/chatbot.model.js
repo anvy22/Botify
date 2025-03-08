@@ -34,6 +34,14 @@ const ChatbotSchema = new mongoose.Schema({
         enum: ['active', 'inactive'],
         default: 'active'
     },
+    APIKEY: {
+        type: String,
+        
+    },
+    API_URL: {
+        type: String,
+    
+    }
   
 });
 

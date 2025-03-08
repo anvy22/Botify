@@ -209,15 +209,17 @@ GET /chatbot/get-bot/:id
 #### **Response:**
 ```json
 {
-    "_id": "67b56adcf2adee6f6359b6dd",
+    "_id": "67cb2350eebb50be5ee45ab1",
     "userId": "67b56a56f2adee6f6359b6d5",
-    "name": "Samsung Book 4",
-    "requestCount": 1,
-    "description": "The Samsung Galaxy Book4 in Gray features 16GB RAM, 512GB SSD, 15.6 Full HD display, Intel Core i5 processor, Windows 11 Home, MS Office 2021, fingerprint reader, Intel Iris XE graphics, and RJ45 LAN port.",
-    "information": "The Samsung Galaxy Book4 is a portable laptop with a 15.6-inch Full HD display, an Intel Core i5 processor at 1.3 GHz, 16GB LPDDR4X RAM, and a 512GB SSD storage. It has Dolby Atmos speakers, Intel Iris Xe Graphics, runs on Windows 11 Home, and features a 54Wh lithium-ion battery. Connectivity options include Bluetooth, Wi-Fi (802.11ax), two USB 3.0 ports, and an HDMI port. The device weighs 1.55 kg and comes with a 45W charger, USB-C to C cable, and a quick start guide made in China.",
+    "name": "Samsung Book 16",
+    "requestCount": 0,
+    "description": "The Samsung Galaxy Book4 in Gray has 16GB RAM, 512GB SSD, 15.6 Full HD display, Intel Core i5 processor, Windows 11 Home, MS Office 2021, fingerprint reader, Intel Iris XE graphics, and RJ45 LAN port.",
+    "information": "The Samsung Galaxy Book4 features:\n\n* A 15.6-inch Full HD display (1920 x 1080 pixels)\n* Intel Core i5 processor (1.3 GHz)\n* 16GB LPDDR4X RAM\n* 512GB SSD\n* Dolby Atmos speakers\n* Intel Iris Xe Graphics\n* Windows 11 Home",
     "status": "active",
-    "created_at": "2025-02-19T05:23:40.390Z",
-    "__v": 0
+    "created_at": "2025-03-07T16:48:16.466Z",
+    "__v": 0,
+    "APIKEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjaGF0Ym90SWQiOiI2N2NiMjM1MGVlYmI1MGJlNWVlNDVhYjEiLCJpYXQiOjE3NDEzNjYwOTZ9.DSASHwy-kf4-KwBYlm80YoE0Kb4ALgKZTb-7fGItAtY",
+    "API_URL": "http://localhost:5000/chatbot/generate"
 }
 ```
 

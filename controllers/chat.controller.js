@@ -33,12 +33,21 @@ module.exports.createBot = async (req, res) => {
 
         const result = await chatbot.save();
 
+        const APIKEY = jwt.sign({ chatbotId: result._id }, process.env.JWT_SECRET);
+        const API_URL = process.env.URL;
+
+        const updatedChatbot = await ChatbotModel.findByIdAndUpdate(
+            result._id,
+            { $set: { APIKEY, API_URL } },
+            { new: true }            
+        );  
+
         await addChatbotId(userId, result._id);
         logActivity(userId, 'CREATED BOT', `Bot ID: ${result._id}  Bot Name: ${result.name}`);
 
-        const APIKEY = jwt.sign({ chatbotId: result._id }, process.env.JWT_SECRET);
-        const API_URL = process.env.URL;
-        res.status(201).json({result,API_URL,APIKEY});
+        
+        
+        res.status(201).json({ updatedChatbot,API_URL,APIKEY});
     } catch (error) {
         console.error("Chatbot Creation Error:", error); // Log any errors during chatbot creation
        return res.status(500).json({ message: error.message });
@@ -204,7 +213,7 @@ module.exports.listBots = async (req, res) => {
 
         // Check if the user has any chatbots
         if (!chatbots.length) {
-            return res.status(200).json({ message: 'No chatbots found for this user.' });
+            return res.status(404).json({ message: 'No chatbots found for this user.' });
         }
 
         res.status(200).json(chatbots);
