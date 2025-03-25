@@ -21,7 +21,27 @@ module.exports.register = async ({ firstname,lastname, email, password }) => {
         await OTP.create({ email, otp, password,firstname,lastname, expiresAt });
 
         // Send OTP to the user's email
-        await sendEmail(email, "Your OTP for Registration of Botify", `Your OTP is ${otp} , it will expire in 10 minutes.`);
+        await sendEmail(
+            email,
+            "Your OTP for Botify Registration",
+     `Dear User,
+          
+          🚀 WELCOME TO BOTIFY! 🚀
+          
+          Your One-Time Password (OTP) for registration is:
+          
+          🔹 ${otp} 🔹
+          
+          This OTP is valid for 10 minutes. Please do not share it with anyone.
+          
+          If you did not request this OTP, please ignore this email.
+          
+     Best regards,  
+     The Botify Team`
+          );
+          
+          
+          
 
         return { message: "OTP sent to your email." };
     } catch (error) {

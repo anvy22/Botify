@@ -46,6 +46,53 @@
   }
 }
 ```
+**GET** `/users/profile`
+
+**it uses token for identify the user.**
+
+#### Response
+```json
+{
+    "user": {
+        "fullname": {
+            "firstname": "Athul",
+            "lastname": "K"
+        },
+        "_id": "678e7cb2a4e097c17c5cbd57",
+        "email": "athulkurunthala2003@gmail.com",
+        "chatbotIds": [
+            "678e8530a4ec8c7ecd8cb117",
+            "678e85c289c7465a8227b09b",
+            "678e88a579872cd364c4bc4d",
+            "678e9328437b204c90aead79",
+            "67973fe257a1c8fc471bfb18",
+            "67c9f0340ef1d3596d5f2c4c",
+            "67c9f1ae0ef1d3596d5f2c80",
+            "67cf1c4feedd11d9cf4cbb8c",
+            "67cf1e26eedd11d9cf4cbbd2",
+            "67cf1feaeedd11d9cf4cbbf7",
+            "67cf3066eedd11d9cf4cbe4d",
+            "67d01bc80abe56b6c31db47c",
+            "67d045480abe56b6c31db6cd",
+            "67d047db0abe56b6c31db6fb",
+            "67d05e2c0abe56b6c31db85f",
+            "67d05e410abe56b6c31db86c",
+            "67d05e760abe56b6c31db879",
+            "67d05e940abe56b6c31db886",
+            "67d10bb83d63294f60127122",
+            "67d3e109146355f0e26a0da1"
+        ],
+        "plan": "free",
+        "totalRequestCount": 78,
+        "credit": 442,
+        "domain": "",
+        "status": "active",
+        "createdAt": "2025-01-20T16:41:22.701Z",
+        "updatedAt": "2025-03-14T07:56:36.289Z",
+        "__v": 20
+    }
+}
+```
 
 ### Logout User
 **GET** `/logout`
@@ -335,13 +382,218 @@ Host: localhost:5000
     ]
 }
 ```
+## Analysis
+**GET** `/analysis/getOverallAnalysis`
+
+#### Description 
+This route retrives no of total,active and inactive bots for a specific user.
+
+**this route uses token to identify the user**
+ 
+## responce format
+```json
+{
+    "totalChatbotCount": 7,
+    "activebots": 6,
+    "inactivebots": 1
+}
+
+```
+
+**GET** `/analysis/getChatbotsAnalysis`
+
+#### Description 
+This route retrives bot id's ,bot names,request percentage and total requestcount for a specific user.
+
+**this route uses token to identify the user**
+ 
+## responce format
+```json
+{
+    "chatbots": [
+        {
+            "botId": "67d01bc80abe56b6c31db47c",
+            "name": "ChatGenie",
+            "requestCount": 33,
+            "requestPercentage": "84.62%"
+        },
+        {
+            "botId": "67d05e2c0abe56b6c31db85f",
+            "name": "HydroBot",
+            "requestCount": 4,
+            "requestPercentage": "10.26%"
+        },
+        {
+            "botId": "67d3e109146355f0e26a0da1",
+            "name": "QuantumSnooze 5000",
+            "requestCount": 2,
+            "requestPercentage": "5.13%"
+        },
+        {
+            "botId": "67d05e410abe56b6c31db86c",
+            "name": "ResumeProBot",
+            "requestCount": 0,
+            "requestPercentage": "0.00%"
+        },
+        {
+            "botId": "67d05e760abe56b6c31db879",
+            "name": "ChargeMate",
+            "requestCount": 0,
+            "requestPercentage": "0.00%"
+        },
+        {
+            "botId": "67d05e940abe56b6c31db886",
+            "name": "BudgetBuddy",
+            "requestCount": 0,
+            "requestPercentage": "0.00%"
+        },
+        {
+            "botId": "67d10bb83d63294f60127122",
+            "name": "QuantumGrip 5000",
+            "requestCount": 0,
+            "requestPercentage": "0.00%"
+        }
+    ],
+    "totalRequestCounts": 39
+}
+
+```
 
 ## Notes
 - Helps track user actions such as bot activations, deactivations, and creations.
 - Useful for logging and monitoring recent operations. 🚀
 
+**GET** `/analysis/ChatbotGraphAnalysis`
+### query parameter :year(the year which  data is needed)
 
+#### Description 
+This route retrives data for plotting the ovaroll usage graph.
 
+**this route uses token to identify the user**
+ 
+## responce format
+```json
+{
+    "success": true,
+    "data": [
+        {
+            "month": "2025-01",
+            "count": 0
+        },
+        {
+            "month": "2025-02",
+            "count": 0
+        },
+        {
+            "month": "2025-03",
+            "count": 4
+        },
+        {
+            "month": "2025-04",
+            "count": 0
+        },
+        {
+            "month": "2025-05",
+            "count": 0
+        },
+        {
+            "month": "2025-06",
+            "count": 0
+        },
+        {
+            "month": "2025-07",
+            "count": 0
+        },
+        {
+            "month": "2025-08",
+            "count": 0
+        },
+        {
+            "month": "2025-09",
+            "count": 0
+        },
+        {
+            "month": "2025-10",
+            "count": 0
+        },
+        {
+            "month": "2025-11",
+            "count": 0
+        },
+        {
+            "month": "2025-12",
+            "count": 0
+        }
+    ]
+}
+
+```
+**GET** `/analysis/ChatbotGraphAnalysis`
+### query parameter :year(the year which  data is needed)
+### query parameter :chatbotId(ID of chatbot need to find)  
+
+#### Description 
+This route retrives data for plotting the bot specific usage graph.
+
+**this route uses token to identify the user**
+ 
+## responce format
+```json
+{
+    "success": true,
+    "data": [
+        {
+            "month": "2025-01",
+            "count": 0
+        },
+        {
+            "month": "2025-02",
+            "count": 0
+        },
+        {
+            "month": "2025-03",
+            "count": 4
+        },
+        {
+            "month": "2025-04",
+            "count": 0
+        },
+        {
+            "month": "2025-05",
+            "count": 0
+        },
+        {
+            "month": "2025-06",
+            "count": 0
+        },
+        {
+            "month": "2025-07",
+            "count": 0
+        },
+        {
+            "month": "2025-08",
+            "count": 0
+        },
+        {
+            "month": "2025-09",
+            "count": 0
+        },
+        {
+            "month": "2025-10",
+            "count": 0
+        },
+        {
+            "month": "2025-11",
+            "count": 0
+        },
+        {
+            "month": "2025-12",
+            "count": 0
+        }
+    ]
+}
+
+```
 
 ### Error Responses
 If the request fails, an appropriate error message and status code are returned.

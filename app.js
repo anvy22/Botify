@@ -8,6 +8,7 @@ const connectDB = require("./db/db");
 const userRoutes = require("./routes/user.routes");
 const chatRoutes = require("./routes/chat.routes");
 const activityRoutes = require("./routes/activity.routes");
+const analysisRoutes = require("./routes/analysis.routes");
 
 connectDB();
 
@@ -29,5 +30,6 @@ app.use("/chatbot",chatRoutes);
 
 app.use("/activities",activityRoutes);
 
+app.use("/analysis",analysisRoutes)
 
 module.exports = app;

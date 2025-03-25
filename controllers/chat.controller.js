@@ -170,7 +170,12 @@ module.exports.generateResponse = async (req, res) => {
 
         if (response) {
             // Log the request and response
-            const log = new logModel({ chatbotId, messages: [{ message: prompt, timestamp: new Date() }] });
+            const log = new logModel({ 
+                chatbotId, 
+                message: prompt, 
+                timestamp: new Date() 
+              });
+              
             await log.save();
 
             // Increment chatbot request count
