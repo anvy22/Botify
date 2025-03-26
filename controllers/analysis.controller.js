@@ -70,10 +70,8 @@ module.exports.ChatbotGraphAnalysis = async (req, res) => {
     try {
         const userId = req.user;
         const { year } = req.query; // Get year from query parameter
- 
 
-        
-        // Validate the year parameter
+        // Validate and parse the year parameter
         const selectedYear = year && !isNaN(year) ? parseInt(year) : new Date().getFullYear();
 
         // Get all chatbot IDs for the given user
@@ -94,6 +92,12 @@ module.exports.ChatbotGraphAnalysis = async (req, res) => {
             timestamp: { $gte: startDate, $lte: endDate }
         });
 
+        // Month names array for better readability
+        const monthNames = [
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ];
+
         // Initialize an array to count logs per month
         const monthlyCount = Array(12).fill(0);
 
@@ -102,10 +106,10 @@ module.exports.ChatbotGraphAnalysis = async (req, res) => {
             monthlyCount[monthIndex]++; // Increment count for that month
         });
 
-        // Format the response
-        const formattedData = monthlyCount.map((count, index) => ({
-            month: `${selectedYear}-${String(index + 1).padStart(2, '0')}`,
-            count,
+        // Format the response in the requested format
+        const formattedData = monthNames.map((month, index) => ({
+            month,
+            requestCount: monthlyCount[index],
         }));
 
         res.json({ success: true, data: formattedData });
@@ -117,52 +121,52 @@ module.exports.ChatbotGraphAnalysis = async (req, res) => {
 };
 
 
-module.exports.ChatbotSpecificGraphAnalysis = async(req,res)=>{
-
+module.exports.ChatbotSpecificGraphAnalysis = async (req, res) => {
     try {
+        const chatbotId = req.query.chatbotId;
+        const year = req.query.year;
 
-        const chatbotId  = req.query.chatbotId;
-        const  year = req.query.year; 
-        
-        console.log(year);
-         // Validate the year parameter
-         const selectedYear = year && !isNaN(year) ? parseInt(year) : new Date().getFullYear();
-    
-       // Define start and end dates for the selected year
-       const startDate = new Date(selectedYear, 0, 1); // January 1st of selected year
-       const endDate = new Date(selectedYear, 11, 31, 23, 59, 59); // December 31st of selected year
+        if (!chatbotId) {
+            return res.status(400).json({ success: false, message: "chatbotId is required" });
+        }
 
-    
-        // Find logs for the chatbots owned by the user within the current year
+        // Validate the year parameter
+        const selectedYear = year && !isNaN(year) ? parseInt(year) : new Date().getFullYear();
+
+        // Define start and end dates for the selected year
+        const startDate = new Date(selectedYear, 0, 1); // January 1st of selected year
+        const endDate = new Date(selectedYear, 11, 31, 23, 59, 59); // December 31st of selected year
+
+        // Find logs for the specific chatbot within the selected year
         const logs = await logModel.find({
-          chatbotId: { $in: chatbotId },
-          timestamp: { $gte: startDate, $lte: endDate }
+            chatbotId: chatbotId,
+            timestamp: { $gte: startDate, $lte: endDate }
         });
 
+        // Month names array for better readability
+        const monthNames = [
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ];
 
         // Initialize an array to count logs per month
         const monthlyCount = Array(12).fill(0);
-    
+
         logs.forEach(log => {
-          const monthIndex = new Date(log.timestamp).getMonth(); // Extract month (0-11)
-          monthlyCount[monthIndex]++; // Increment count for that month
+            const monthIndex = new Date(log.timestamp).getMonth(); // Extract month (0-11)
+            monthlyCount[monthIndex]++; // Increment count for that month
         });
-    
-        // Format the response
-        const formattedData = monthlyCount.map((count, index) => ({
-          month: `${new Date().getFullYear()}-${String(index + 1).padStart(2, '0')}`,
-          count,
+
+        // Format the response in the requested format
+        const formattedData = monthNames.map((month, index) => ({
+            month,
+            requestCount: monthlyCount[index],
         }));
-    
+
         res.json({ success: true, data: formattedData });
-    
-      } catch (error) {
+
+    } catch (error) {
         console.error(error);
         res.status(500).json({ success: false, message: 'Server error' });
-      }
-
-
-
-
-
-}
+    }
+};

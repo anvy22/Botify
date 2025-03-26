@@ -477,52 +477,52 @@ This route retrives data for plotting the ovaroll usage graph.
     "success": true,
     "data": [
         {
-            "month": "2025-01",
-            "count": 0
+            "month": "January",
+            "requestCount": 0
         },
         {
-            "month": "2025-02",
-            "count": 0
+            "month": "February",
+            "requestCount": 0
         },
         {
-            "month": "2025-03",
-            "count": 4
+            "month": "March",
+            "requestCount": 4
         },
         {
-            "month": "2025-04",
-            "count": 0
+            "month": "April",
+            "requestCount": 0
         },
         {
-            "month": "2025-05",
-            "count": 0
+            "month": "May",
+            "requestCount": 0
         },
         {
-            "month": "2025-06",
-            "count": 0
+            "month": "June",
+            "requestCount": 0
         },
         {
-            "month": "2025-07",
-            "count": 0
+            "month": "July",
+            "requestCount": 0
         },
         {
-            "month": "2025-08",
-            "count": 0
+            "month": "August",
+            "requestCount": 0
         },
         {
-            "month": "2025-09",
-            "count": 0
+            "month": "September",
+            "requestCount": 0
         },
         {
-            "month": "2025-10",
-            "count": 0
+            "month": "October",
+            "requestCount": 0
         },
         {
-            "month": "2025-11",
-            "count": 0
+            "month": "November",
+            "requestCount": 0
         },
         {
-            "month": "2025-12",
-            "count": 0
+            "month": "December",
+            "requestCount": 0
         }
     ]
 }
@@ -543,52 +543,52 @@ This route retrives data for plotting the bot specific usage graph.
     "success": true,
     "data": [
         {
-            "month": "2025-01",
-            "count": 0
+            "month": "January",
+            "requestCount": 0
         },
         {
-            "month": "2025-02",
-            "count": 0
+            "month": "February",
+            "requestCount": 0
         },
         {
-            "month": "2025-03",
-            "count": 4
+            "month": "March",
+            "requestCount": 4
         },
         {
-            "month": "2025-04",
-            "count": 0
+            "month": "April",
+            "requestCount": 0
         },
         {
-            "month": "2025-05",
-            "count": 0
+            "month": "May",
+            "requestCount": 0
         },
         {
-            "month": "2025-06",
-            "count": 0
+            "month": "June",
+            "requestCount": 0
         },
         {
-            "month": "2025-07",
-            "count": 0
+            "month": "July",
+            "requestCount": 0
         },
         {
-            "month": "2025-08",
-            "count": 0
+            "month": "August",
+            "requestCount": 0
         },
         {
-            "month": "2025-09",
-            "count": 0
+            "month": "September",
+            "requestCount": 0
         },
         {
-            "month": "2025-10",
-            "count": 0
+            "month": "October",
+            "requestCount": 0
         },
         {
-            "month": "2025-11",
-            "count": 0
+            "month": "November",
+            "requestCount": 0
         },
         {
-            "month": "2025-12",
-            "count": 0
+            "month": "December",
+            "requestCount": 0
         }
     ]
 }
